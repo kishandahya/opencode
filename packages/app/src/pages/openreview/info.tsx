@@ -97,7 +97,7 @@ export function Info(props: { store: ReviewStore; onNavigate: (file: string) => 
                     <div data-slot="check-bar">
                       <div
                         data-slot="check-passed"
-                        style={{ width: `${(checks().passed / checks().total) * 100}%` }}
+                        style={{ width: `${checks().total > 0 ? (checks().passed / checks().total) * 100 : 0}%` }}
                       />
                     </div>
                     <span data-slot="check-text">

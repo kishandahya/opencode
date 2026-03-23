@@ -1,8 +1,8 @@
-import { createSignal, type ParentProps } from "solid-js"
+import { createSignal, type JSX } from "solid-js"
 import { ResizeHandle } from "@opencode-ai/ui/resize-handle"
 import "./layout.css"
 
-export function ReviewLayout(props: ParentProps<{ left: any; center: any; right: any; bar: any }>) {
+export function ReviewLayout(props: { left: JSX.Element; center: JSX.Element; right: JSX.Element; bar: JSX.Element }) {
   const [left, setLeft] = createSignal(240)
   const [right, setRight] = createSignal(340)
 

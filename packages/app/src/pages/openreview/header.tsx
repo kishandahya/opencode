@@ -4,8 +4,6 @@ import "./header.css"
 
 export function Header(props: { store: ReviewStore }) {
   const pr = () => props.store.state.pr
-  const total = () =>
-    props.store.state.diffs.reduce((sum, d) => sum + d.additions + d.deletions, 0)
   const additions = () => props.store.state.diffs.reduce((sum, d) => sum + d.additions, 0)
   const deletions = () => props.store.state.diffs.reduce((sum, d) => sum + d.deletions, 0)
 

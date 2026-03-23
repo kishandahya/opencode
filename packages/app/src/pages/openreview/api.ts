@@ -1,3 +1,11 @@
+async function checked<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    const text = await res.text().catch(() => "Unknown error")
+    throw new Error(`API error ${res.status}: ${text}`)
+  }
+  return res.json() as Promise<T>
+}
+
 export namespace ReviewAPI {
   export async function start(url: string, config?: Record<string, unknown>) {
     const res = await fetch("/openreview", {
@@ -5,12 +13,12 @@ export namespace ReviewAPI {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url, config }),
     })
-    return res.json() as Promise<{ id: string }>
+    return checked<{ id: string }>(res)
   }
 
   export async function get(id: string) {
     const res = await fetch(`/openreview/${id}`)
-    return res.json()
+    return checked<unknown>(res)
   }
 
   export async function toggle(id: string, fid: string, resolved: boolean) {
@@ -19,7 +27,7 @@ export namespace ReviewAPI {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ resolved }),
     })
-    return res.json()
+    return checked<unknown>(res)
   }
 
   export async function chat(id: string, content: string) {
@@ -28,7 +36,7 @@ export namespace ReviewAPI {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content }),
     })
-    return res.json()
+    return checked<unknown>(res)
   }
 
   export function streamUrl(id: string) {

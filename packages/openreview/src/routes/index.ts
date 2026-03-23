@@ -14,8 +14,9 @@ export function OpenReviewRoutes(): Hono {
     const body = await c.req.json<{ url: string; config?: Record<string, unknown> }>()
     if (!body.url) return c.json({ error: "url is required" }, 400)
 
-    const cfg = Config.parse(body.config ?? {})
-    const id = await Pipeline.run(body.url, cfg)
+    const parsed = Config.safeParse(body.config ?? {})
+    if (!parsed.success) return c.json({ error: "Invalid config", details: parsed.error.issues }, 400)
+    const id = await Pipeline.run(body.url, parsed.data)
     return c.json({ id })
   })
 
@@ -40,12 +41,14 @@ export function OpenReviewRoutes(): Hono {
         if (e.type === "done" || e.type === "error") done = true
       })
 
-      // If already done, send current state
+      // If already done, send current state and clean up
       if (review.status === "done") {
+        unsub()
         await sse.writeSSE({ event: "done", data: JSON.stringify({ type: "done" }) })
         return
       }
       if (review.status === "error") {
+        unsub()
         await sse.writeSSE({
           event: "error",
           data: JSON.stringify({ type: "error", message: "Review failed" }),
@@ -101,8 +104,9 @@ export function OpenReviewRoutes(): Hono {
       }))
 
       let full = ""
+      const llm = await model(review.config)
       const gen = stream({
-        model: model(review.config),
+        model: llm,
         system,
         messages: msgs,
       })

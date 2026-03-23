@@ -19,7 +19,7 @@ export function createChat(id: string) {
     setMessages((prev) => [...prev, { role: "assistant", content: "" }])
 
     const source = new EventSource(ReviewAPI.chatStreamUrl(id))
-    const idx = messages.length
+    const idx = messages.length - 1
 
     source.addEventListener("text", (e) => {
       setMessages(idx, "content", (prev) => prev + e.data)

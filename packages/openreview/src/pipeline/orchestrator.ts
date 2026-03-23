@@ -61,8 +61,8 @@ export async function run(
       review.status = "running"
       review.updated = Date.now()
 
-      // Phase 0: Context
-      const { pr, diffs } = await Context.run(url, cfg.key, broadcast)
+      // Phase 0: Context (use GITHUB_TOKEN env var, not LLM API key)
+      const { pr, diffs } = await Context.run(url, process.env.GITHUB_TOKEN, broadcast)
       review.pr = pr
       review.diffs = diffs
       review.updated = Date.now()
@@ -71,7 +71,7 @@ export async function run(
       CopyMove.run(diffs, broadcast)
 
       // Phase 2: Semantic Grouping
-      const llm = model(cfg)
+      const llm = await model(cfg)
       const groups = await Semantic.run(llm, diffs, broadcast)
       review.groups = groups
       review.updated = Date.now()

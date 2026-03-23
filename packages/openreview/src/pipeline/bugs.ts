@@ -76,7 +76,7 @@ export async function run(
     const finding: z.infer<typeof Finding> = {
       id: `bug-${++counter}`,
       ...f,
-      category: "bug",
+      category: "flag",
       resolved: false,
     }
     findings.push(finding)
