@@ -1,0 +1,83 @@
+[data-component="openreview-header"] {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-base);
+}
+
+[data-component="openreview-header"] [data-slot="top"] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
+}
+
+[data-component="openreview-header"] [data-slot="badge"] {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+[data-component="openreview-header"] [data-slot="badge"][data-status="open"] {
+  background: var(--color-green-900);
+  color: var(--color-green-300);
+}
+
+[data-component="openreview-header"] [data-slot="badge"][data-status="closed"] {
+  background: var(--color-red-900);
+  color: var(--color-red-300);
+}
+
+[data-component="openreview-header"] [data-slot="badge"][data-status="merged"] {
+  background: var(--color-purple-900);
+  color: var(--color-purple-300);
+}
+
+[data-component="openreview-header"] [data-slot="repo"] {
+  font-size: 0.8125rem;
+  color: var(--text-dimmed);
+}
+
+[data-component="openreview-header"] [data-slot="title"] {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-strong);
+  margin-bottom: 0.5rem;
+}
+
+[data-component="openreview-header"] [data-slot="meta"] {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.8125rem;
+  color: var(--text-dimmed);
+}
+
+[data-component="openreview-header"] [data-slot="branch"] {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.125rem 0.375rem;
+  background: var(--background-stronger);
+  border-radius: var(--radius-sm);
+}
+
+[data-component="openreview-header"] [data-slot="stats"] {
+  display: flex;
+  gap: 0.375rem;
+}
+
+[data-component="openreview-header"] [data-slot="additions"] {
+  color: var(--color-green-500);
+}
+
+[data-component="openreview-header"] [data-slot="deletions"] {
+  color: var(--color-red-500);
+}
+
+[data-component="openreview-header"] [data-slot="loading"] {
+  padding: 0.5rem 0;
+  color: var(--text-dimmed);
+  font-size: 0.875rem;
+}
