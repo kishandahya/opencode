@@ -1,10 +1,15 @@
 import { Hono } from "hono"
 import { streamSSE } from "hono/streaming"
+import z from "zod"
 import * as Pipeline from "../pipeline"
 import { Config } from "../types/config"
 import { model } from "../llm/provider"
 import { stream } from "../llm/stream"
 import type { Review } from "../types/review"
+
+const ChatBody = z.object({
+  content: z.string().min(1).max(10000),
+})
 
 export function OpenReviewRoutes(): Hono {
   const app = new Hono()
@@ -34,11 +39,12 @@ export function OpenReviewRoutes(): Hono {
     if (!review) return c.json({ error: "not found" }, 404)
 
     return streamSSE(c, async (sse) => {
-      let done = false
+      let resolve: (() => void) | undefined
+      const completed = new Promise<void>((r) => { resolve = r })
 
       const unsub = Pipeline.subscribe(sid, (e) => {
         sse.writeSSE({ event: e.type, data: JSON.stringify(e) }).catch(() => {})
-        if (e.type === "done" || e.type === "error") done = true
+        if (e.type === "done" || e.type === "error") resolve?.()
       })
 
       // If already done, send current state and clean up
@@ -58,19 +64,11 @@ export function OpenReviewRoutes(): Hono {
 
       // Heartbeat
       const timer = setInterval(() => {
-        if (done) return
         sse.writeSSE({ event: "heartbeat", data: "{}" }).catch(() => {})
       }, 10000)
 
-      // Wait for completion
-      await new Promise<void>((resolve) => {
-        const check = setInterval(() => {
-          if (done) {
-            clearInterval(check)
-            resolve()
-          }
-        }, 500)
-      })
+      // Wait for completion (event-driven, no polling)
+      await completed
 
       clearInterval(timer)
       unsub()
@@ -82,10 +80,12 @@ export function OpenReviewRoutes(): Hono {
     const review = Pipeline.get(c.req.param("id"))
     if (!review) return c.json({ error: "not found" }, 404)
 
-    const body = await c.req.json<{ content: string }>()
+    const raw = await c.req.json()
+    const result = ChatBody.safeParse(raw)
+    if (!result.success) return c.json({ error: "Invalid chat body", details: result.error.issues }, 400)
     review.messages.push({
       role: "user",
-      content: body.content,
+      content: result.data.content,
       timestamp: Date.now(),
     })
     return c.json({ ok: true })

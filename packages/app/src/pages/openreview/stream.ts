@@ -1,12 +1,39 @@
 import { onCleanup } from "solid-js"
-import type { ReviewStore } from "./store"
+import type { ReviewStore, ReviewPR, ReviewDiff, ReviewFinding, ReviewGroup, ReviewSummary } from "./store"
 import { ReviewAPI } from "./api"
+
+interface ReviewSnapshot {
+  pr?: ReviewPR
+  diffs?: ReviewDiff[]
+  findings?: ReviewFinding[]
+  groups?: ReviewGroup[]
+  summary?: ReviewSummary
+  status?: string
+}
 
 export function createReviewStream(id: string, store: ReviewStore) {
   let source: EventSource | undefined
   let retries = 0
   const MAX = 5
   const BASE = 1000
+
+  // Hydrate initial state from REST API
+  ReviewAPI.get(id).then((data) => {
+    const snap = data as ReviewSnapshot
+    if (snap.pr) store.setPR(snap.pr)
+    if (snap.diffs?.length) store.setDiffs(snap.diffs)
+    if (snap.findings?.length) {
+      for (const f of snap.findings) store.addFinding(f)
+    }
+    if (snap.groups?.length) {
+      for (const g of snap.groups) store.addGroup(g)
+    }
+    if (snap.summary) store.setSummary(snap.summary)
+    if (snap.status === "done") store.setStatus("done")
+    if (snap.status === "error") store.setError("Review failed")
+  }).catch(() => {
+    // Initial hydration failed — SSE events will still populate state
+  })
 
   function connect() {
     source = new EventSource(ReviewAPI.streamUrl(id))

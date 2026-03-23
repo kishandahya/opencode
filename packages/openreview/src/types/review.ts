@@ -5,6 +5,13 @@ import { Group } from "./group"
 import { PR } from "./pr"
 import { Message } from "./chat"
 
+export const CopyMoveEntry = z.object({
+  from: z.string(),
+  to: z.string(),
+  kind: z.enum(["copy", "move"]),
+  similarity: z.number(),
+})
+
 export const FileDiff = z
   .object({
     file: z.string(),
@@ -43,6 +50,7 @@ export const Review = z
     pr: PR.optional(),
     config: Config,
     diffs: z.array(FileDiff),
+    copyMoves: z.array(CopyMoveEntry).default([]),
     findings: z.array(Finding),
     groups: z.array(Group),
     summary: Summary.optional(),

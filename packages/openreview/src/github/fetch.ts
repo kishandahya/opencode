@@ -51,12 +51,21 @@ export async function fetch(opts: {
     reviewers,
   }
 
-  const { data: files } = await kit.pulls.listFiles({
-    owner: opts.owner,
-    repo: opts.repo,
-    pull_number: opts.number,
-    per_page: 300,
-  })
+  // GitHub clamps per_page to 100 — paginate to get all files
+  const files: Awaited<ReturnType<typeof kit.pulls.listFiles>>["data"] = []
+  let page = 1
+  while (true) {
+    const { data: batch } = await kit.pulls.listFiles({
+      owner: opts.owner,
+      repo: opts.repo,
+      pull_number: opts.number,
+      per_page: 100,
+      page,
+    })
+    files.push(...batch)
+    if (batch.length < 100) break
+    page++
+  }
 
   const diffs: FileDiff[] = await Promise.all(
     files

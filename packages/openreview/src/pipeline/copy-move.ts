@@ -34,7 +34,7 @@ export function run(
         result.push({
           from: del.file,
           to: add.file,
-          kind: sim > 0.8 ? "copy" : "move",
+          kind: sim > 0.8 ? "move" : "copy",
           similarity: sim,
         })
       }

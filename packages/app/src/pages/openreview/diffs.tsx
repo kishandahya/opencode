@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
 import type { ReviewStore } from "./store"
 import "./diffs.css"
 
@@ -121,7 +121,10 @@ function computeDiff(before: string, after: string): DiffLine[] {
   const newLines = after.split("\n")
   const lines: DiffLine[] = []
 
-  const maxLen = Math.max(oldLines.length, newLines.length)
+  // Pre-compute Set lookups for O(1) membership tests
+  const oldSet = new Set(oldLines)
+  const newSet = new Set(newLines)
+
   let oldIdx = 0
   let newIdx = 0
 
@@ -139,7 +142,7 @@ function computeDiff(before: string, after: string): DiffLine[] {
       })
       oldIdx++
       newIdx++
-    } else if (oldLine !== undefined && (newLine === undefined || !newLines.slice(newIdx).includes(oldLine))) {
+    } else if (oldLine !== undefined && (newLine === undefined || !newSet.has(oldLine))) {
       lines.push({
         type: "remove",
         oldNum: oldIdx + 1,
@@ -147,7 +150,7 @@ function computeDiff(before: string, after: string): DiffLine[] {
         text: oldLine,
       })
       oldIdx++
-    } else if (newLine !== undefined && (oldLine === undefined || !oldLines.slice(oldIdx).includes(newLine))) {
+    } else if (newLine !== undefined && (oldLine === undefined || !oldSet.has(newLine))) {
       lines.push({
         type: "add",
         oldNum: undefined,
@@ -174,7 +177,7 @@ function computeDiff(before: string, after: string): DiffLine[] {
 }
 
 function DiffView(props: { before: string; after: string }) {
-  const lines = () => computeDiff(props.before, props.after)
+  const lines = createMemo(() => computeDiff(props.before, props.after))
 
   return (
     <div data-slot="diff-table">

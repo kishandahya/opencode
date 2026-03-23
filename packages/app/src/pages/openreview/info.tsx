@@ -1,4 +1,4 @@
-import { createSignal, For, Show } from "solid-js"
+import { createSignal, For, Show, type JSX } from "solid-js"
 import type { ReviewStore, ReviewFinding } from "./store"
 import { Detail } from "./detail"
 import "./info.css"
@@ -151,7 +151,7 @@ function Section(props: {
   title: string
   severity: string
   defaultOpen?: boolean
-  children: any
+  children: JSX.Element
 }) {
   const [open, setOpen] = createSignal(props.defaultOpen ?? false)
 

@@ -13,6 +13,29 @@ import * as Summary from "./summary"
 const sessions = new Map<string, Review>()
 const listeners = new Map<string, Set<(e: PipelineEvent) => void>>()
 
+// Evict completed sessions after 30 minutes
+const TTL = 30 * 60 * 1000
+const MAX_SESSIONS = 50
+
+function evict() {
+  const now = Date.now()
+  for (const [sid, review] of sessions) {
+    if ((review.status === "done" || review.status === "error") && now - review.updated > TTL) {
+      sessions.delete(sid)
+      listeners.delete(sid)
+    }
+  }
+  // Hard cap: remove oldest if over limit
+  if (sessions.size > MAX_SESSIONS) {
+    const sorted = [...sessions.entries()].sort((a, b) => a[1].updated - b[1].updated)
+    const excess = sessions.size - MAX_SESSIONS
+    for (let i = 0; i < excess; i++) {
+      sessions.delete(sorted[i][0])
+      listeners.delete(sorted[i][0])
+    }
+  }
+}
+
 function id(): string {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36)
 }
@@ -32,6 +55,7 @@ export async function run(
   cfg: Config,
   emit?: (e: PipelineEvent) => void,
 ): Promise<string> {
+  evict()
   const sid = id()
   const now = Date.now()
 
@@ -41,6 +65,7 @@ export async function run(
     url,
     config: cfg,
     diffs: [],
+    copyMoves: [],
     findings: [],
     groups: [],
     messages: [],
@@ -68,7 +93,7 @@ export async function run(
       review.updated = Date.now()
 
       // Phase 1: Copy/Move
-      CopyMove.run(diffs, broadcast)
+      review.copyMoves = CopyMove.run(diffs, broadcast)
 
       // Phase 2: Semantic Grouping
       const llm = await model(cfg)
@@ -86,11 +111,9 @@ export async function run(
       review.updated = Date.now()
 
       // Phase 5: Scope Drift
-      if (pr) {
-        const flags = await Drift.run(llm, pr, diffs, broadcast)
-        review.findings = [...review.findings, ...flags]
-        review.updated = Date.now()
-      }
+      const flags = await Drift.run(llm, pr, diffs, broadcast)
+      review.findings = [...review.findings, ...flags]
+      review.updated = Date.now()
 
       // Phase 6: Summary
       const summary = await Summary.run(llm, review.findings, broadcast)
