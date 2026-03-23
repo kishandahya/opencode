@@ -1,0 +1,150 @@
+[data-component="openreview-analysis"] {
+  border-bottom: 1px solid var(--border-base);
+}
+
+[data-component="openreview-analysis"] [data-slot="toggle"] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: var(--text-strong);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+[data-component="openreview-analysis"] [data-slot="toggle"]:hover {
+  background: var(--background-stronger);
+}
+
+[data-component="openreview-analysis"] [data-slot="icon"] {
+  font-size: 0.625rem;
+  transition: transform 0.15s ease;
+  color: var(--text-dimmed);
+}
+
+[data-component="openreview-analysis"] [data-slot="icon"][data-open="true"] {
+  transform: rotate(90deg);
+}
+
+[data-component="openreview-analysis"] [data-slot="status"] {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-dimmed);
+}
+
+[data-component="openreview-analysis"] [data-slot="status"][data-done] {
+  color: var(--color-green-500);
+}
+
+[data-component="openreview-analysis"] [data-slot="body"] {
+  padding: 0 1.5rem 1rem;
+}
+
+[data-component="openreview-analysis"] [data-slot="summary"] {
+  margin-bottom: 0.75rem;
+}
+
+[data-component="openreview-analysis"] [data-slot="verdict"] {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+[data-component="openreview-analysis"] [data-slot="verdict"][data-verdict="pass"] {
+  background: var(--color-green-900);
+  color: var(--color-green-300);
+}
+
+[data-component="openreview-analysis"] [data-slot="verdict"][data-verdict="fail"] {
+  background: var(--color-red-900);
+  color: var(--color-red-300);
+}
+
+[data-component="openreview-analysis"] [data-slot="text"] {
+  font-size: 0.8125rem;
+  color: var(--text-base);
+  line-height: 1.5;
+  margin: 0 0 0.5rem;
+}
+
+[data-component="openreview-analysis"] [data-slot="counts"] {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+[data-component="openreview-analysis"] [data-slot="count"] {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+[data-component="openreview-analysis"] [data-slot="count"][data-severity="severe"] {
+  background: var(--color-red-900);
+  color: var(--color-red-300);
+}
+
+[data-component="openreview-analysis"] [data-slot="count"][data-severity="non-severe"] {
+  background: var(--color-orange-900);
+  color: var(--color-orange-300);
+}
+
+[data-component="openreview-analysis"] [data-slot="count"][data-severity="investigate"] {
+  background: var(--color-yellow-900);
+  color: var(--color-yellow-300);
+}
+
+[data-component="openreview-analysis"] [data-slot="count"][data-severity="informational"] {
+  background: var(--color-blue-900);
+  color: var(--color-blue-300);
+}
+
+[data-component="openreview-analysis"] [data-slot="count"][data-severity="flag"] {
+  background: var(--color-purple-900);
+  color: var(--color-purple-300);
+}
+
+[data-component="openreview-analysis"] [data-slot="log"] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+[data-component="openreview-analysis"] [data-slot="log-entry"] {
+  font-size: 0.75rem;
+  color: var(--text-dimmed);
+  padding: 0.125rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+[data-component="openreview-analysis"] [data-slot="log-entry"][data-active] {
+  color: var(--text-base);
+}
+
+[data-component="openreview-analysis"] [data-slot="spinner"] {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid var(--border-base);
+  border-top-color: var(--text-base);
+  border-radius: 50%;
+  animation: openreview-spin 0.6s linear infinite;
+}
+
+@keyframes openreview-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

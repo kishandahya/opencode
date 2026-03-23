@@ -1,0 +1,96 @@
+[data-component="openreview-start"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 1.5rem;
+  background: var(--background-base);
+  color: var(--text-base);
+}
+
+[data-component="openreview-start"] [data-slot="title"] {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+[data-component="openreview-start"] [data-slot="subtitle"] {
+  font-size: 0.875rem;
+  color: var(--text-dimmed);
+}
+
+[data-component="openreview-start"] [data-slot="form"] {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 32rem;
+}
+
+[data-component="openreview-start"] [data-slot="input"] {
+  flex: 1;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-base);
+  background: var(--background-stronger);
+  color: var(--text-base);
+  font-size: 0.875rem;
+  outline: none;
+}
+
+[data-component="openreview-start"] [data-slot="input"]:focus {
+  border-color: var(--color-blue-500);
+}
+
+[data-component="openreview-start"] [data-slot="submit"] {
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--color-blue-600);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+
+[data-component="openreview-start"] [data-slot="submit"]:hover {
+  background: var(--color-blue-500);
+}
+
+[data-component="openreview-layout"] {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--background-base);
+  color: var(--text-base);
+}
+
+[data-component="openreview-layout"] [data-slot="columns"] {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+[data-component="openreview-layout"] [data-slot="left"] {
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-base);
+}
+
+[data-component="openreview-layout"] [data-slot="center"] {
+  flex: 1;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+[data-component="openreview-layout"] [data-slot="right"] {
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--border-base);
+}
+
+[data-component="openreview-layout"] [data-slot="bar"] {
+  border-top: 1px solid var(--border-base);
+  padding: 0.5rem 1rem;
+  background: var(--background-stronger);
+}

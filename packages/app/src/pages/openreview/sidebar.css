@@ -1,0 +1,38 @@
+[data-component="openreview-sidebar"] {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+[data-component="openreview-sidebar"] [data-slot="tabs"] {
+  display: flex;
+  border-bottom: 1px solid var(--border-base);
+  flex-shrink: 0;
+}
+
+[data-component="openreview-sidebar"] [data-slot="tab"] {
+  flex: 1;
+  padding: 0.625rem 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: var(--text-dimmed);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+[data-component="openreview-sidebar"] [data-slot="tab"]:hover {
+  color: var(--text-base);
+}
+
+[data-component="openreview-sidebar"] [data-slot="tab"][data-active="true"] {
+  color: var(--text-strong);
+  border-bottom-color: var(--text-strong);
+}
+
+[data-component="openreview-sidebar"] [data-slot="content"] {
+  flex: 1;
+  overflow-y: auto;
+}
